@@ -1,0 +1,1 @@
+# O SGD está implementado de forma embutida nos métodos das camadas e no treino.
