@@ -8,7 +8,9 @@ A atividade demanda treinar um MLP para classificar os 10 dígitos manuscritos d
 ## Fluxo de Desenvolvimento 
 
 Antes de qualquer coisa, comecei seguindo o conselho do professor e codei do zero uma rede neural para o problema XOR. Embora desafiador, pois não usei nenhuma inteligência artificial para ajuda, essa etapa foi imprescindível para que eu conseguisse consolidar, de fato, as aulas e os autoestudos, assim como evoluir meu raciocínio matemático e entender profundamente com clareza a lógica do MLP. Para isso, usei a função de ativação sigmoid. 
+
 Após essa etapa, utilizei da mesma estrutura forward e backward para contemplar a problemática do escopo da atividade para classificar os 10 dígitos manuscritos do dataset MNIST. Nessa etapa, fiz um código bem simples, com o fito de testar meus conhecimentos e alavancar meu aprendizado com a função de ativação ReLu. Por fim, implementei mais camadas e a comparação entre configurações de rede me levou a dar um passo maior de modularizar o código, o que expandiu minha lógica de estrutura de código para redes neurais. Paralelamente "brinquei" com os parâmetros de matemática, gradiente, learning_rate...
+
 Todo esse processo foi feito com o fito máximo de aprendizado e, enquanto codava e estudava no Google Colab, fui descrevendo meus insights com detalhes e "ao vivo" e coloquei tudo isso no arquivo estudos.ipynb, dentro da pasta notebooks (meus commits refletem o tempo médio demandado em cada etapa). Além disso, para maior detalhes e comprovação do meu desenvolvimento ao longo da ponderada, é válido analisar os comentários dos códigos, os quais escrevi na maioria das vezes em primeira pessoa, refletindo o que de fato eu estava raciocinando.  
 
 ## Como Rodar
@@ -55,7 +57,7 @@ Os resultados de cada uma delas pode ser conferidos na seção logo abaixo.
 
 ## Resultados
 
-Tendo em vista as configurações de comparação, por intermédio da análise das curvas de aprendizado abaixo, infere-se que a primeira configuração performou melhor, tanto no que tange à evolução da parte, quanto na evolução da acurácia.
+Tendo em vista as configurações de comparação, por intermédio da análise das curvas de aprendizado abaixo, infere-se que a primeira configuração performou melhor, tanto no que tange à evolução da perda (loss), quanto na evolução da acurácia.
 
 <p align = "center">Figura 1: Curvas de Aprendizado</p>
 
@@ -98,10 +100,7 @@ Diante isso, ao calcular a acurácia média de cada configuração, temos:
 Seguem abaixo, em formato de seções, as principais decisões e desafios, tanto de matemática quanto de código, que encontrei ao longo do desenvolvimento.
 
 ### He/Kaiming Initialization
-Multipliquei a inicialização gaussiana por $\sqrt{2.0 / \text{input\_dim}}$ com base nos estudos que fiz, nos quais inferi que se os pesos começarem muito grandes, os sinais explodem e, se começarem muito pequenos, os neurônios morrem. Assim, essa inicialização garante que a variância das saídas de cada neurônio seja igual a 1, ideal para redes que usam ativação ReLU.
-
-### Cache Interno (self.X)
-Durante o forward, a camada obrigatoriamente armazena uma cópia da matriz de entrada X. Isso é necessário porque a derivada parcial da perda em relação aos pesos depende de $X$:$$\frac{\partial L}{\partial W} = \frac{1}{m} (dZ \cdot X^T)$$
+Multipliquei a inicialização gaussiana por raiz de 2 com base nos estudos que fiz, nos quais inferi que se os pesos começarem muito grandes, os sinais explodem e, se começarem muito pequenos, os neurônios morrem. Assim, essa inicialização garante que a variância das saídas de cada neurônio seja igual a 1, ideal para redes que usam ativação ReLU.
 
 ### SoftmaxCrossEntropy
 
@@ -110,7 +109,7 @@ $$\frac{\partial L}{\partial Z} = A - Y$$
 
 Implementei isso no código assim: ``return self.A - self.Y_one_hot``
 
-Aqui, vale mencionar como dificuldade que, haja vista que a fórmula da entropia cruzada faz o cálculo de log ŷ, no caso da rede atribuir certeza de 0% para um número, temos que o cálculo de log(0) tende ao infinito negativo ($-\infty$). Sob essa perspectiva, para evitar que a perda virasse NaN, apliquei np.clip(self.A, 1e-15, 1.0). 
+Aqui, vale mencionar como dificuldade que, haja vista que a fórmula da entropia cruzada faz o cálculo de log ŷ, no caso da rede atribuir certeza de 0% para um número, temos que o cálculo de log(0) tende ao infinito negativo. Sob essa perspectiva, para evitar que a perda virasse NaN, apliquei np.clip(self.A, 1e-15, 1.0). 
 
 ### Gradient_Check
 
